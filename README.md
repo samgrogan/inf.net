@@ -1,2 +1,2 @@
-# INFDotNet
-A C# library to Read, Verify, and Write Windows INF files
+# INF.Net
+A C# library to Verify, Serialize, and De-Serialize Windows INF files
