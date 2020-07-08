@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 namespace INF.Net {
     public class InfSerializer {
 
-        async Task<InfFile> DeserializeFromFileAsync(string FilePath) {
-
+        // Deserialize an INF file from the given file path
+        InfFile DeserializeFromFile(string FilePath) {
             using (FileStream infFileStream = File.OpenRead(FilePath)) {
-                return await DeserializeFromStreamAsync(infFileStream);
+                return DeserializeFromStream(infFileStream);
             }
         }
 
-        async Task<InfFile> DeserializeFromStreamAsync(Stream InputStream) {
+        // Deserialize an INF file from the given stream
+        InfFile DeserializeFromStream(Stream InputStream) {
             StringBuilder infStringBuilder = new StringBuilder();
             byte[] buffer = new byte[1024];
             UTF8Encoding utf8Encoding = new UTF8Encoding(true);
@@ -24,19 +25,22 @@ namespace INF.Net {
                 infStringBuilder.Append(utf8Encoding.GetString(buffer));
             }
 
-            return await DeserializeFromStringAsync(infStringBuilder.ToString());
+            return DeserializeFromString(infStringBuilder.ToString());
         }
 
-        async Task<InfFile> DeserializeFromStringAsync(string InfContents) {
+        // Deserialize an ING file from 
+
+        InfFile DeserializeFromString(string InfContents) {
             InfFile infFile = new InfFile();
+
 
 
 
             return infFile;
         }
 
-        Task SerializeAsync(InfFile InputFile) {
-            return null;
+        void Serialize(InfFile InputFile) {
+            return;
         }
     }
 }

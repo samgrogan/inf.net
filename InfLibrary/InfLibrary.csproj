@@ -41,8 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InfComment.cs" />
+    <Compile Include="InfElement.cs" />
     <Compile Include="InfFile.cs" />
+    <Compile Include="InfSection.cs" />
     <Compile Include="InfSerializer.cs" />
+    <Compile Include="InfStringsSection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
