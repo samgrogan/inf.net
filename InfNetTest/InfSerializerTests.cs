@@ -1,9 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using INF.Net;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
+﻿using InfNet.Models;
 using System.Diagnostics;
 
 namespace INF.Net.Test {
@@ -17,9 +12,11 @@ namespace INF.Net.Test {
 
             // Try to deserialize each file
             foreach (string infFileName in infFileNames) {
-                Debug.WriteLine(infFileName);
-            }
+                string infFilePath = Path.Combine(windowsInfFolder, infFileName);
 
+                Debug.WriteLine(infFilePath);
+                InfFile infFile = InfSerializer.DeserializeFromFile(infFilePath);
+            }
         }
     }
 }
