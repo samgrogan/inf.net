@@ -46,6 +46,7 @@ namespace INF.Net {
             bool inSectionName = false;
             bool inComment = false;
             bool inQuotes = false;
+            bool inQuotedString = false;
 
             int length = line.Length;
             for (int index = 0; index < length; index++) {
@@ -96,8 +97,22 @@ namespace INF.Net {
                         break;
                     case '=':
                         break;
+                    case '%':
+                        if (!inComment) {
+                            if (!inQuotedString) {
+                                inQuotedString = true;
+                            } else {
+                                if (index < (length - 1) && line[index + 1] == '%') {
+                                    index++;
+                                }
+                                else {
+                                    inQuotedString = false;
+                                }
+                            }
+                        }
+                        break;
                     case '\\':
-                        if (!inQuotes) {
+                        if (!inComment && !inQuotes && !inQuotedString) {
                             if (index < (length - 1) && line[index + 1] == '\\') {
                                 index++;
                             }
@@ -109,6 +124,9 @@ namespace INF.Net {
                 }
             }
             if (inQuotes) {
+                throw new($"Error finding matching quotes.");
+            }
+            if (inQuotedString) {
                 throw new($"Error finding end of quoted string.");
             }
             if (inSectionName) {
