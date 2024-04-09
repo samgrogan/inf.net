@@ -96,7 +96,16 @@ namespace INF.Net {
                         break;
                     case '=':
                         break;
-
+                    case '\\':
+                        if (!inQuotes) {
+                            if (index < (length - 1) && line[index + 1] == '\\') {
+                                index++;
+                            }
+                            else {
+                                throw new($"Continues to the next line.");
+                            }
+                        }
+                        break;
                 }
             }
             if (inQuotes) {
