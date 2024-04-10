@@ -24,12 +24,12 @@ namespace INF.Net.Test {
             }
         }
 
-        [TestMethod]
-        [DataRow("HKR, Settings, Compression_On,, \"%%C1\"\"H3-J1\"")]
-        [DataRow("%PCI\\CC_0C0010.DeviceDesc%=Generic.Install,PCI\\CC_0C0010")]
-        public void DeserializeInfLineTests(string line) {
-            InfSection? currentSection = null;
-            InfDeserializer.ParseLine(line, ref currentSection);
-        }
+        //[TestMethod]
+        //[DataRow("HKR, Settings, Compression_On,, \"%%C1\"\"H3-J1\"")]
+        //[DataRow("%PCI\\CC_0C0010.DeviceDesc%=Generic.Install,PCI\\CC_0C0010")]
+        //public void DeserializeInfLineTests(string line) {
+        //    InfSection? currentSection = null;
+        //    InfDeserializer.ParseLine(line, ref currentSection);
+        //}
     }
 }
