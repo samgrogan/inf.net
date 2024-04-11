@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using InfNet.Collections;
 using InfNet.Enums;
 using InfNet.Extensions;
 using InfNet.Models;
@@ -27,8 +28,8 @@ namespace INF.Net {
         // Deserialize an INF file from a string 
 
         public static InfFile DeserializeFromString(string infContents) {
-            Stack<InfToken> tokens = new();
-            InfToken? currentToken = tokens.PushAndReturn(new(InfNet.Enums.TokenType.StartOfFile));
+            TokenList tokens = new();
+            InfToken? currentToken = tokens.Add(new(InfNet.Enums.TokenType.StartOfFile));
 
             // Convert the file to a stream of tokens
             int length = infContents.Length;
@@ -39,7 +40,7 @@ namespace INF.Net {
                 ParseNextChar(c, next, ref index, ref currentToken, tokens);
             }
 
-            currentToken = tokens.PushAndReturn(new(InfNet.Enums.TokenType.EndOfFile));
+            currentToken = tokens.Add(new(InfNet.Enums.TokenType.EndOfFile));
 
             InfFile infFile = new();
 
@@ -51,35 +52,35 @@ namespace INF.Net {
         #region Internal Methods
 
         // Parse the next character in the INF file
-        private static void ParseNextChar(char c, char? next, ref int index, ref InfToken? currentToken, Stack<InfToken> tokens) {
+        private static void ParseNextChar(char c, char? next, ref int index, ref InfToken? currentToken, TokenList tokens) {
             // Is this a newline? (\n)
             if (c == '\n') {
-                currentToken = tokens.PushAndReturn(new(InfNet.Enums.TokenType.NewLine, c));
+                currentToken = tokens.Add(new(InfNet.Enums.TokenType.NewLine, c));
             }
             // Is this a newline? (
             else if ($"{c}{next}" == $"\r\n") {
                 index++;
-                tokens.PushAndReturn(new(InfNet.Enums.TokenType.NewLine, $"{c}{next}"));
+                tokens.Add(new(InfNet.Enums.TokenType.NewLine, $"{c}{next}"));
             }
             else {
                 switch (c) {
                     case ';':
-                        currentToken = tokens.PushAndReturn(new(TokenType.StartComment, c));
+                        currentToken = tokens.Add(new(TokenType.StartComment, c));
                         break;
                     case '=':
-                        currentToken = tokens.PushAndReturn(new(TokenType.EqualsSymbol, c));
+                        currentToken = tokens.Add(new(TokenType.EqualsSymbol, c));
                         break;
                     case ',':
-                        currentToken = tokens.PushAndReturn(new(TokenType.CommaSeparator, c));
+                        currentToken = tokens.Add(new(TokenType.CommaSeparator, c));
                         break;
                     case '\\':
                         // A line continuation can only happen before whites
                         if (next == null || char.IsWhiteSpace(next.Value) || next == '\n' || next == '\r' || next == ';') {
-                            currentToken = tokens.PushAndReturn(new(TokenType.LineContinuation, c));
+                            currentToken = tokens.Add(new(TokenType.LineContinuation, c));
                         }
                         else {
                             if (currentToken == null || currentToken.Type != TokenType.Literal) {
-                                currentToken = tokens.PushAndReturn(new(TokenType.Literal, c));
+                                currentToken = tokens.Add(new(TokenType.Literal, c));
                             } else {
                                 currentToken.Data += c;
                             }
