@@ -6,6 +6,8 @@ namespace InfNet.Models {
 
         public TokenType Type { get; set; }
 
+        public int? Index { get; set; }
+
         public string? Data { get; set; }
 
         #endregion Properties

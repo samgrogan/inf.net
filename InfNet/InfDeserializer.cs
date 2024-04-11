@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using InfNet.Collections;
 using InfNet.Enums;
-using InfNet.Extensions;
 using InfNet.Models;
 
 namespace INF.Net {

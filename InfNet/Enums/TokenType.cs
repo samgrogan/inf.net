@@ -1,17 +1,23 @@
-﻿namespace InfNet.Enums {
+﻿using System.Collections.Generic;
+
+namespace InfNet.Enums {
     public enum TokenType {
         StartOfFile,
         EndOfFile,
+        NewLine,
+
+        StartComment,           // ';'
         Literal,                // Text
-        NewLine,                // '\n'
         EqualsSymbol,           // '='
         CommaSeparator,         // ','
         LineContinuation,       // '\'
-        StartComment,           // ';'
+
         StartSectionName,       // '['
         EndSectionName,         // ']'
+
         StartStringToken,       // '%'
         EndStringToken,         // '%'
+
         StartQuotedString,      // '"'
         EndQuotedString,        // '"'
     }
