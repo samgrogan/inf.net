@@ -37,31 +37,61 @@ namespace InfNet.Collections {
             return token;
         }
 
+        // Add to the current literal token (or create a new one)
+        public InfToken AddToLiteral(char c) {
+            InfToken? currentToken = _tokens.Last();
+
+            if (currentToken == null || currentToken.Type != TokenType.Literal) {
+                currentToken = Add(new(TokenType.Literal, c));
+            }
+            else {
+                currentToken.Data += c;
+            }
+
+            return currentToken;
+        }
+
         // Finds the first token of the given type from the end of the list
         public InfToken? MostRecentOfType(TokenType tokenType) {
             return _tokens.LastOrDefault(o => o.Type == tokenType);
         }
 
-        // Is the current state inside of a comment?
-        public bool IsInComment() {
-            // Comments end at either end of file or end of line
-            InfToken? startCommentToken = MostRecentOfType(TokenType.StartComment);
-            InfToken? endCommentToken = MostRecentOfType(TokenType.NewLine);
+        //// Is the current state inside of a comment?
+        //public bool IsInComment() {
+        //    // Comments end at either end of file or end of line
+        //    InfToken? startCommentToken = MostRecentOfType(TokenType.StartComment);
+        //    InfToken? endCommentToken = MostRecentOfType(TokenType.NewLine);
 
-            // Find the last index
-            if (startCommentToken != null) {
-                if (endCommentToken != null) {
-                    if (endCommentToken.Index > startCommentToken.Index) {
-                        return false;
-                    }
-                }
-                return true;
-            }
+        //    // Find the last index
+        //    if (startCommentToken != null) {
+        //        if (endCommentToken != null) {
+        //            if (endCommentToken.Index > startCommentToken.Index) {
+        //                return false;
+        //            }
+        //        }
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        // Is the current state inside the title of a section
+        //// Are we inside a string token value?
+        //public bool IsInStringToken() {
+        //    InfToken? startStringTokenToken = MostRecentOfType(TokenType.StartStringToken);
+        //    InfToken? endStringTokenToken = MostRecentOfType(TokenType.EndStringToken);
+
+        //    if (startStringTokenToken != null) {
+        //        if (endStringTokenToken != null) {
+        //            if (endStringTokenToken.Index < startStringTokenToken.Index) {
+        //                return false;
+        //            }
+        //        }
+        //        return true;
+        //    }
+
+        //    return false;
+        //}
+
 
         #endregion Public Methods
     }

@@ -15,10 +15,8 @@ namespace InfNet.Enums {
         StartSectionName,       // '['
         EndSectionName,         // ']'
 
-        StartStringToken,       // '%'
-        EndStringToken,         // '%'
+        StringToken,            // '%'
 
-        StartQuotedString,      // '"'
-        EndQuotedString,        // '"'
+        QuotedString,           // '"'
     }
 }

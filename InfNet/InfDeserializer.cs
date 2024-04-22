@@ -52,37 +52,57 @@ namespace INF.Net {
 
         // Parse the next character in the INF file
         private static void ParseNextChar(char c, char? next, ref int index, ref InfToken? currentToken, TokenList tokens) {
-            // Is this a newline? (\n)
-            if (c == '\n') {
+            if (c == '\n') { // Is this a newline? (\n)
                 currentToken = tokens.Add(new(InfNet.Enums.TokenType.NewLine, c));
             }
-            // Is this a newline? (
-            else if ($"{c}{next}" == $"\r\n") {
+            else if ($"{c}{next}" == $"\r\n") { // Is this a newline? (\r\n)
                 index++;
-                tokens.Add(new(InfNet.Enums.TokenType.NewLine, $"{c}{next}"));
+                tokens.Add(new(TokenType.NewLine, $"{c}{next}"));
             }
             else {
                 switch (c) {
-                    case ';':
+                    case ';': // Start Comment
                         currentToken = tokens.Add(new(TokenType.StartComment, c));
                         break;
-                    case '=':
+                    case '=': // Equals
                         currentToken = tokens.Add(new(TokenType.EqualsSymbol, c));
                         break;
-                    case ',':
+                    case ',': // Comma
                         currentToken = tokens.Add(new(TokenType.CommaSeparator, c));
                         break;
-                    case '\\':
-                        // A line continuation can only happen before whites
+                    case '\\': // Continue line
+                        // A line continuation can only happen before whitespace
                         if (next == null || char.IsWhiteSpace(next.Value) || next == '\n' || next == '\r' || next == ';') {
                             currentToken = tokens.Add(new(TokenType.LineContinuation, c));
                         }
                         else {
-                            if (currentToken == null || currentToken.Type != TokenType.Literal) {
-                                currentToken = tokens.Add(new(TokenType.Literal, c));
-                            } else {
-                                currentToken.Data += c;
-                            }
+                            currentToken = tokens.AddToLiteral(c);
+                        }
+                        break;
+                    case '[': // Start section name
+                        currentToken = tokens.Add(new(TokenType.StartSectionName, c));
+                        break;
+                    case ']': // End section name
+                        currentToken = tokens.Add(new(TokenType.EndSectionName, c));
+                        break;
+                    case '%': // Start or end string literal
+                        currentToken = tokens.Add(new(TokenType.StringToken, c));
+                        break;
+                    case '"': // Quote      
+                        if (next == '"') { // Is this a quote literal?
+                            index++;
+                            currentToken = tokens.AddToLiteral(c);
+                        }
+                        else {
+                            currentToken = tokens.Add(new(TokenType.QuotedString, c));
+                        }
+                        break;
+                    default:
+                        if (currentToken == null || currentToken.Type != TokenType.Literal) {
+                            currentToken = tokens.Add(new(TokenType.Literal, c));
+                        }
+                        else {
+                            currentToken.Data += c;
                         }
                         break;
                 }
