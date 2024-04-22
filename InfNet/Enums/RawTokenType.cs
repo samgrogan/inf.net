@@ -1,16 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace InfNet.Enums {
-    public enum TokenType {
-        StartOfFile,
-        EndOfFile,
-        NewLine,
-
+﻿namespace InfNet.Enums {
+    internal enum RawTokenType {
         StartComment,           // ';'
         Literal,                // Text
         EqualsSymbol,           // '='
         CommaSeparator,         // ','
-        LineContinuation,       // '\'
 
         StartSectionName,       // '['
         EndSectionName,         // ']'

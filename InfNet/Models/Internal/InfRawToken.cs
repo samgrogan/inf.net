@@ -1,10 +1,10 @@
 ﻿using InfNet.Enums;
 
-namespace InfNet.Models {
-    public class InfToken {
+namespace InfNet.Models.Internal {
+    internal class InfRawToken {
         #region Properties
 
-        public TokenType Type { get; set; }
+        public RawTokenType Type { get; set; }
 
         public int? Index { get; set; }
 
@@ -14,15 +14,15 @@ namespace InfNet.Models {
 
         #region Public Methods
 
-        public InfToken(TokenType type) {
+        public InfRawToken(RawTokenType type) {
             Type = type;
         }
 
-        public InfToken(TokenType type, string? data) : this(type) {
+        public InfRawToken(RawTokenType type, string? data) : this(type) {
             Data = data;
         }
 
-        public InfToken(TokenType type, char c) : this(type) {
+        public InfRawToken(RawTokenType type, char c) : this(type) {
             Data = c.ToString();
         }
 
