@@ -26,7 +26,11 @@ namespace InfNet {
 
         // Prepares the given output directory
         protected string PrepareOutputDirectoryForFile(string fileName) {
-            string outputPath = Path.Combine(Path.Combine(OutputFolder, Path.GetFileNameWithoutExtension(FileName), fileName));
+            return PrepareOutputDirectoryForFile(fileName, OutputFolder);
+        }
+
+        protected string PrepareOutputDirectoryForFile(string fileName, string? parentFolder) {
+            string outputPath = Path.Combine(OutputFolder, Path.Combine(Path.Combine(Path.GetFileNameWithoutExtension(FileName), Path.Combine(parentFolder ?? string.Empty, fileName))));
             string? directoryPath = Path.GetDirectoryName(outputPath);
 
             if (string.IsNullOrWhiteSpace(directoryPath)) {
