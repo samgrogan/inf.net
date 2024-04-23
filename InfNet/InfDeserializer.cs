@@ -55,6 +55,7 @@ namespace INF.Net {
         // Parse the next character in the INF file
         private static void ParseNextChar(char c, char? next, ref int index, ref bool continueLine, InfRawLineTokens rawTokens) {
             if (c == '\n' || $"{c}{next}" == $"\r\n") { // Is this a newline? (\n or \r\n)
+                rawTokens.AddToken(new(RawTokenType.NewLine));
                 if (continueLine) {
                     continueLine = false;
                 }
@@ -64,8 +65,6 @@ namespace INF.Net {
                         index++;
                     }
                 }
-                rawTokens.AddToken(new(RawTokenType.NewLine));
-                rawTokens.AddLine();
             }
             else {
                 InfRawToken? currentToken = rawTokens.CurrentToken();
@@ -185,7 +184,7 @@ namespace INF.Net {
                 }
             }
 
-            return (inComment ? comment.ToString().Trim() : null);
+            return comment.ToString();
         }
 
         private static string? ExtractSectionName(List<InfRawToken> rawLineTokens) {
@@ -206,7 +205,7 @@ namespace INF.Net {
                 }
             }
 
-            return (sectionName.ToString().Trim());
+            return sectionName.ToString();
         }
 
         private static void ExtractKeyAndValues(InfLine line, List<InfRawToken> rawLineTokens) {
@@ -231,11 +230,14 @@ namespace INF.Net {
                         break;
                     case RawTokenType.EqualsSymbol: // Left of the equals is the key
                         if (!flags.InQuotedString && !flags.InStringToken) {
-                            if (line.Key != null) {
-                                throw new($"Multiple keys found.");
+                            if (line.Key == null) {
+                                line.AddKey(currentValue);
+                                currentValue = new();
                             }
-                            line.Key = currentValue;
-                            currentValue = new();
+                            else {
+                                // Treat any additional = as text
+                                currentValue.Value += token.Data;
+                            }
                         }
                         else {
                             currentValue.Value += token.Data;
