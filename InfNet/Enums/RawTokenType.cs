@@ -11,5 +11,7 @@
         StringToken,            // '%'
 
         QuotedString,           // '"'
+
+        NewLine,                // '\n' or '\r\n'
     }
 }

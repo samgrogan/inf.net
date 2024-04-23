@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Xml.Linq;
 using InfNet.Enums;
 using InfNet.Helpers;
 using InfNet.Models.Internal;
@@ -63,6 +64,8 @@ namespace INF.Net {
                         index++;
                     }
                 }
+                rawTokens.AddToken(new(RawTokenType.NewLine));
+                rawTokens.AddLine();
             }
             else {
                 InfRawToken? currentToken = rawTokens.CurrentToken();
@@ -93,10 +96,16 @@ namespace INF.Net {
                         rawTokens.AddToken(new(RawTokenType.EndSectionName, c));
                         break;
                     case CharHelpers.PercentChar: // Start or end string literal
-                        rawTokens.AddToken(new(RawTokenType.StringToken, c));
+                        if (next == CharHelpers.PercentChar) { // Is this a percent literal?
+                            index++;
+                            rawTokens.AddToLiteral(c);
+                        }
+                        else {
+                            rawTokens.AddToken(new(RawTokenType.StringToken, c));
+                        }
                         break;
                     case CharHelpers.DoubleQuoteChar: // Quote      
-                        if (next == '"') { // Is this a quote literal?
+                        if (next == CharHelpers.DoubleQuoteChar) { // Is this a quote literal?
                             index++;
                             rawTokens.AddToLiteral(c);
                         }
@@ -145,49 +154,20 @@ namespace INF.Net {
                 InfRawToken firstToken = rawLineTokens[0];
                 switch (firstToken.Type) {
                     case RawTokenType.StartComment:
+                        // Comments have already been extracted
                         break;
                     case RawTokenType.StartSectionName:
+                        line.SectionName = ExtractSectionName(rawLineTokens);
                         break;
                     default:
-                        // Optional key and values
+                        // Extract optional key and values
+                        ExtractKeyAndValues(line, rawLineTokens);
                         break;
                 }
 
                 return line;
             }
         }
-
-        //// Parse the next token in a list of tokens
-        //private static void ParseNextToken(InfFile infFile, InfRawToken currentToken, ref InfLine? currentLine, InfLineFlags lineFlags) {
-        //    switch (currentToken.Type) {
-        //        case RawTokenType.StartComment:
-        //            if (!lineFlags.InComment) {
-        //                lineFlags.InComment = true;
-        //            }
-        //            break;
-        //        case RawTokenType.Literal:
-        //            break;
-        //        case RawTokenType.EqualsSymbol:
-        //            break;
-        //        case RawTokenType.CommaSeparator:
-        //            break;
-        //        case RawTokenType.StartSectionName:
-        //            if (currentLine == null) {
-        //                currentLine = new InfSection("");
-        //            }
-        //            break;
-        //        case RawTokenType.EndSectionName:
-        //            break;
-        //        case RawTokenType.StringToken:
-        //            break;
-        //        case RawTokenType.QuotedString:
-        //            break;
-
-        //        // Fall through in case we missed something (should not happen)
-        //        default:
-        //            throw new($"Unknown raw token type '{currentToken.Type}'.");
-        //    }
-        //}
 
         private static string? ExtractComment(List<InfRawToken> rawLineTokens) {
             bool inComment = false;
@@ -197,12 +177,116 @@ namespace INF.Net {
                 if (token.Type == RawTokenType.StartComment) {
                     inComment = true;
                 }
+                else if (token.Type == RawTokenType.NewLine) {
+                    inComment = false;
+                }
                 else if (inComment) {
                     comment.Append(token.Data);
                 }
             }
 
-            return (inComment ? comment.ToString() : null);
+            return (inComment ? comment.ToString().Trim() : null);
+        }
+
+        private static string? ExtractSectionName(List<InfRawToken> rawLineTokens) {
+            bool inSectionName = false;
+            StringBuilder sectionName = new();
+
+            foreach (InfRawToken token in rawLineTokens) {
+                if (token.Type == RawTokenType.StartSectionName) {
+                    inSectionName = true;
+                }
+                else if (inSectionName) {
+                    if (token.Type == RawTokenType.EndSectionName) {
+                        inSectionName = false;
+                    }
+                    else {
+                        sectionName.Append(token.Data);
+                    }
+                }
+            }
+
+            return (sectionName.ToString().Trim());
+        }
+
+        private static void ExtractKeyAndValues(InfLine line, List<InfRawToken> rawLineTokens) {
+            InfLineFlags flags = new();
+            InfValue currentValue = new();
+
+            // Parse the tokens in the line
+            foreach (InfRawToken token in rawLineTokens) {
+                ParseNextToken(token, line, flags, ref currentValue);
+            }
+        }
+
+        // Parse the next token in a list of tokens
+        private static void ParseNextToken(InfRawToken token, InfLine line, InfLineFlags flags, ref InfValue currentValue) {
+            if (!flags.InComment) {
+                switch (token.Type) {
+                    case RawTokenType.StartComment: // Comments run to end of line
+                        flags.InComment = true;
+                        break;
+                    case RawTokenType.Literal:
+                        currentValue.Value += token.Data;
+                        break;
+                    case RawTokenType.EqualsSymbol: // Left of the equals is the key
+                        if (!flags.InQuotedString && !flags.InStringToken) {
+                            if (line.Key != null) {
+                                throw new($"Multiple keys found.");
+                            }
+                            line.Key = currentValue;
+                            currentValue = new();
+                        }
+                        else {
+                            currentValue.Value += token.Data;
+                        }
+                        break;
+                    case RawTokenType.CommaSeparator:
+                        if (!flags.InQuotedString && !flags.InStringToken) {
+                            line.AddValue(currentValue);
+                            currentValue = new();
+                        }
+                        else {
+                            currentValue.Value += token.Data;
+                        }
+                        break;
+                    case RawTokenType.StartSectionName:
+                    case RawTokenType.EndSectionName:
+                        if (!flags.InQuotedString && !flags.InStringToken) {
+                            throw new($"Found unexpected token '{token.Type}'.");
+                        }
+                        break;
+                    case RawTokenType.StringToken:
+                        if (!flags.InStringToken) {
+                            flags.InStringToken = true;
+                            currentValue.IsStringToken = true;
+                        }
+                        else {
+                            flags.InStringToken = false;
+                        }
+                        break;
+                    case RawTokenType.QuotedString:
+                        if (!flags.InQuotedString) {
+                            flags.InQuotedString = true;
+                            currentValue.IsQuotedString = true;
+                        }
+                        else {
+                            flags.InQuotedString = false;
+                        }
+                        break;
+                    case RawTokenType.NewLine:
+                        line.AddValue(currentValue);
+                        break;
+                    // Fall through in case we missed something (should not happen)
+                    default:
+                        throw new($"Unknown raw token type '{token.Type}'.");
+                }
+            }
+            else {
+                if (token.Type == RawTokenType.NewLine) {
+                    flags.InComment = false;
+                }
+            }
         }
 
         #endregion Internal Methods

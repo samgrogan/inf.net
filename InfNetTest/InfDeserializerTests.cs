@@ -1,8 +1,7 @@
 ﻿using InfNet.Models.Public;
 using System.Diagnostics;
 
-namespace INF.Net.Test
-{
+namespace INF.Net.Test {
     [TestClass]
     public class InfDeserializerTests {
         [TestMethod]
@@ -14,23 +13,20 @@ namespace INF.Net.Test
             // Try to deserialize each file
             foreach (string infFileName in infFileNames) {
                 string infFilePath = Path.Combine(windowsInfFolder, infFileName);
-
                 Debug.WriteLine(infFilePath);
+
                 try {
                     InfFile infFile = InfDeserializer.DeserializeFromFile(infFilePath);
+
+                    // Write out the lines
+                    foreach (InfLine line in infFile.Lines) {
+                        Debug.WriteLine($"\t{line}");
+                    }
                 }
                 catch (Exception ex) {
                     Debug.WriteLine(ex.Message);
                 }
             }
         }
-
-        //[TestMethod]
-        //[DataRow("HKR, Settings, Compression_On,, \"%%C1\"\"H3-J1\"")]
-        //[DataRow("%PCI\\CC_0C0010.DeviceDesc%=Generic.Install,PCI\\CC_0C0010")]
-        //public void DeserializeInfLineTests(string line) {
-        //    InfSection? currentSection = null;
-        //    InfDeserializer.ParseLine(line, ref currentSection);
-        //}
     }
 }
