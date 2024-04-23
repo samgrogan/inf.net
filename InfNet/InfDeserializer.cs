@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using InfNet.Enums;
+using InfNet.Helpers;
 using InfNet.Models.Internal;
 using InfNet.Models.Public;
 
@@ -67,34 +68,34 @@ namespace INF.Net {
                 InfRawToken? currentToken = rawTokens.CurrentToken();
 
                 switch (c) {
-                    case ';': // Start Comment
+                    case CharHelpers.SemicolonChar: // Start Comment
                         rawTokens.AddToken(new(RawTokenType.StartComment, c));
                         break;
-                    case '=': // Equals
+                    case CharHelpers.EqualsChar: // Equals
                         rawTokens.AddToken(new(RawTokenType.EqualsSymbol, c));
                         break;
-                    case ',': // Comma
+                    case CharHelpers.CommaChar: // Comma
                         rawTokens.AddToken(new(RawTokenType.CommaSeparator, c));
                         break;
-                    case '\\': // Continue line
+                    case CharHelpers.BackslashChar: // Continue line
                         // A line continuation can only happen before whitespace
-                        if (next == null || char.IsWhiteSpace(next.Value) || next == '\n' || next == '\r' || next == ';') {
+                        if (next == null || char.IsWhiteSpace(next.Value) || next == '\n' || next == '\r' || next == CharHelpers.SemicolonChar) {
                             continueLine = true;
                         }
                         else {
                             rawTokens.AddToLiteral(c);
                         }
                         break;
-                    case '[': // Start section name
+                    case CharHelpers.LeftSquareBracketChar: // Start section name
                         rawTokens.AddToken(new(RawTokenType.StartSectionName, c));
                         break;
-                    case ']': // End section name
+                    case CharHelpers.RightSquareBracketChar: // End section name
                         rawTokens.AddToken(new(RawTokenType.EndSectionName, c));
                         break;
-                    case '%': // Start or end string literal
+                    case CharHelpers.PercentChar: // Start or end string literal
                         rawTokens.AddToken(new(RawTokenType.StringToken, c));
                         break;
-                    case '"': // Quote      
+                    case CharHelpers.DoubleQuoteChar: // Quote      
                         if (next == '"') { // Is this a quote literal?
                             index++;
                             rawTokens.AddToLiteral(c);
