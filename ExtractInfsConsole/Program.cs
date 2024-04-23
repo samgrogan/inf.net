@@ -1,4 +1,5 @@
 ﻿using ExtractInfsConsole.Models;
+using InfNet;
 
 namespace ExtractInfsConsole {
     internal class Program {
@@ -10,9 +11,10 @@ namespace ExtractInfsConsole {
                 string[] fileNames = Directory.GetFiles(arguments.SourceFolder);
 
                 foreach (string fileName in fileNames) {
-
-
-
+                    Console.WriteLine($"{fileName}...");
+                    // Is the file supported
+                    bool result = InfExtractor.ExtractInfFiles(fileName, arguments.OutputFolder);
+                    Console.WriteLine($"\t{result}");
                 }
             }
         }
