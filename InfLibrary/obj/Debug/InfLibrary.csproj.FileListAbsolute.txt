@@ -1,6 +1,0 @@
-C:\Source\Repos\samgrogan\INF.Net\InfLibrary\bin\Debug\InfLibrary.dll
-C:\Source\Repos\samgrogan\INF.Net\InfLibrary\bin\Debug\InfLibrary.pdb
-C:\Source\Repos\samgrogan\INF.Net\InfLibrary\obj\Debug\InfLibrary.csprojAssemblyReference.cache
-C:\Source\Repos\samgrogan\INF.Net\InfLibrary\obj\Debug\InfLibrary.csproj.CoreCompileInputs.cache
-C:\Source\Repos\samgrogan\INF.Net\InfLibrary\obj\Debug\InfLibrary.dll
-C:\Source\Repos\samgrogan\INF.Net\InfLibrary\obj\Debug\InfLibrary.pdb
