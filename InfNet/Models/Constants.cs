@@ -7,6 +7,7 @@
 
         // Sections
         public const string VersionSectionName = "Version";
+        public const string ManufacturerSectionName = "Manufacturer";
 
         // Keys
         public const string DriverVerKey = "DriverVer";

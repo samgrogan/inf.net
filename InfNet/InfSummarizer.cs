@@ -13,11 +13,14 @@ namespace InfNet {
         public static List<InfOsDeviceDriver> SummaryizeInfFile(InfFile infFile) {
             List<InfOsDeviceDriver> summary = new();
 
-            // Read the version information
             try {
+                // Read the version information
                 InfDriverVersion driverVersion = ExtractDriverVersion(infFile);
+                Console.WriteLine($"\tDriver version: {driverVersion.Date.ToShortDateString()}, {driverVersion.Version}");
 
-                Console.WriteLine($"Driver version: {driverVersion.Date.ToShortDateString()}, {driverVersion.Version}");
+                // Extract the manufacturer information
+                InfLine manufacturer = ExtractManufacturer(infFile);
+                Console.WriteLine($"\tManufacturer: {manufacturer.Key?.Value} = {string.Join(", ", manufacturer.Values.Select(o => o.Value))}");
             }
             catch (Exception ex) {
                 Console.WriteLine(ex.Message);
@@ -55,6 +58,41 @@ namespace InfNet {
             }
             catch (Exception ex) {
                 throw new($"Failed to read driver version information from INF file.", ex);
+            }
+        }
+
+        // Extract information about the manufacturer
+        public static InfLine ExtractManufacturer(InfFile infFile) {
+            try {
+                // Find the manufacturer section
+                List<InfLine> infManufacturerLines = infFile.SectionLines(Constants.ManufacturerSectionName);
+
+                List<InfLine> valueLines = infManufacturerLines.Where(o => o.Key != null).ToList();
+                if (valueLines.Count == 0) {
+                    throw new($"Expected at least 1 Manufacturer Name line but found 0.");
+                }
+
+                InfLine manufacturerLine = valueLines[0];
+                if (valueLines.Count > 1) {
+                    // If multiple lines, then merge them
+                    foreach (InfLine line in valueLines) {
+                        if (manufacturerLine.Key?.Value != line.Key?.Value) {
+                            throw new($"Found 2 manufacturer names: {manufacturerLine.Key?.Value} and {line.Key?.Value}.");
+                        }
+                        if (line.Values?.Count > 0) {
+                            foreach (InfValue value in line.Values) {
+                                if (!manufacturerLine.Values.Any(o => o.Value == value.Value)) {
+                                    manufacturerLine.AddValue(value);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return manufacturerLine;
+            }
+            catch (Exception ex) {
+                throw new($"Failed to read manufacturer information from INF file.", ex);
             }
         }
 
