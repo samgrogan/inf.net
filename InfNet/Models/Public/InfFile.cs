@@ -6,7 +6,8 @@ namespace InfNet.Models.Public {
 
         #region Properties
 
-        // List of comments
+        // Name of the file
+        public string FileName { get; private set; }
 
         // A dictionary of the sections in the INF File
         public List<InfLine> Lines { get; } = new();
@@ -16,7 +17,8 @@ namespace InfNet.Models.Public {
         #region Public Methods
 
         // Create a blank INF file
-        public InfFile() {
+        public InfFile(string fileName) {
+            FileName = fileName;
         }
 
         // Returns a list of the section names in the file
@@ -30,13 +32,13 @@ namespace InfNet.Models.Public {
 
             bool inSection = false;
             foreach (InfLine line in Lines) {
-                if (line.SectionName == sectionMame) {
+                if (string.Compare(line.SectionName, sectionMame, true) == 0) {
                     inSection = true;
                 }
                 else if (line.Key == null && line.Values == null) {
                     inSection = false;
                 }
-                else if (!string.IsNullOrEmpty(line.SectionName) && line.SectionName != sectionMame) {
+                else if (!string.IsNullOrEmpty(line.SectionName) && string.Compare(line.SectionName, sectionMame, true) != 0) {
                     inSection = false;
                 }
                 if (inSection) {

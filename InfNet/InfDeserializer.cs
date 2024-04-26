@@ -18,18 +18,18 @@ namespace INF.Net {
         // Deserialize an INF file from the given file path
         public static InfFile DeserializeFromFile(string filePath) {
             using FileStream infFileStream = File.OpenRead(filePath);
-            return DeserializeFromStream(infFileStream);
+            return DeserializeFromStream(Path.GetFileName(filePath), infFileStream);
         }
 
         // Deserialize an INF file from the given stream
-        public static InfFile DeserializeFromStream(Stream inputStream) {
+        public static InfFile DeserializeFromStream(string fileName, Stream inputStream) {
             using StreamReader streamReader = new(inputStream, true);
-            return DeserializeFromString(streamReader.ReadToEnd());
+            return DeserializeFromString(fileName, streamReader.ReadToEnd());
         }
 
         // Deserialize an INF file from a string 
 
-        public static InfFile DeserializeFromString(string infContents) {
+        public static InfFile DeserializeFromString(string fileName, string infContents) {
             InfRawLineTokens rawTokens = new();
 
             // Convert the file to a stream of tokens
@@ -43,7 +43,7 @@ namespace INF.Net {
             }
 
             // Initialize the INF file object from the list of tokens
-            InfFile infFile = CreateInfFileFromRawTokens(rawTokens);
+            InfFile infFile = CreateInfFileFromRawTokens(fileName, rawTokens);
 
             return infFile;
         }
@@ -125,8 +125,8 @@ namespace INF.Net {
         }
 
         // Creates and INF File from a series of tokens
-        private static InfFile CreateInfFileFromRawTokens(InfRawLineTokens rawTokens) {
-            InfFile infFile = new();
+        private static InfFile CreateInfFileFromRawTokens(string fileName, InfRawLineTokens rawTokens) {
+            InfFile infFile = new(fileName);
 
             // Parse each line in the input
             foreach (List<InfRawToken> rawLineTokens in rawTokens) {

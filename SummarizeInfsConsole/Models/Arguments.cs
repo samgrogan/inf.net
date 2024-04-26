@@ -1,10 +1,10 @@
-﻿namespace ExtractInfsConsole.Models {
+﻿namespace SummarizeInfsConsole.Models {
     internal class Arguments {
         #region Properties
 
         public string SourceFolder { get; init; }
 
-        public string OutputFolder { get; init; }
+        public string OutputPath { get; init; }
 
         #endregion Properties
 
@@ -13,7 +13,7 @@
         // Initialze the arguments based on what was passed in from the command line
         public static Arguments? Create(string[] args) {
             if (args.Length != 2) {
-                Console.WriteLine($"Usage: ExtractInfsConsole.exe <source folder> <output folder>");
+                Console.WriteLine($"Usage: SummarizeInfsConsole.exe <source folder> <output file path>");
                 return null;
             }
 
@@ -24,10 +24,6 @@
             }
 
             string output = args[1];
-            if (!Directory.Exists(output)) {
-                Console.WriteLine($"Output folder '{output}' does not exist.");
-                return null;
-            }
 
             return new Arguments(source, output);
         }
@@ -38,7 +34,7 @@
 
         private Arguments(string source, string output) {
             SourceFolder = source;
-            OutputFolder = output;
+            OutputPath = output;
         }
 
         #endregion Internal Methods
