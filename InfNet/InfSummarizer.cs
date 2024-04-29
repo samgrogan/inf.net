@@ -41,7 +41,8 @@ namespace InfNet {
                         foreach (InfLine line in sectionLines) {
                             if (!string.IsNullOrWhiteSpace(line.Key?.Value)) {
                                 if (line.Values?.Count == 2) {
-                                    Console.WriteLine($"\t\t{line.Key.Value}: {line.Values[1].Value}");
+                                    string keyText = infFile.GetStringTokenValue(line.Key.Value);
+                                    Console.WriteLine($"\t\t{keyText}: {line.Values[1].Value}");
                                 }
                                 else {
                                     throw new($"Unexpected line '{line}' encountered.");

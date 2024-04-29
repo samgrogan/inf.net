@@ -35,9 +35,6 @@ namespace InfNet.Models.Public {
                 if (string.Compare(line.SectionName, sectionMame, true) == 0) {
                     inSection = true;
                 }
-                else if (line.Key == null && line.Values == null) {
-                    inSection = false;
-                }
                 else if (!string.IsNullOrEmpty(line.SectionName) && string.Compare(line.SectionName, sectionMame, true) != 0) {
                     inSection = false;
                 }
@@ -61,6 +58,29 @@ namespace InfNet.Models.Public {
             }
 
             return allSectionLines;
+        }
+
+        // Finds the value of the given string token
+        public string GetStringTokenValue(string key, string? language = null) {
+            // Build the name of the section
+            string sectionName = Constants.StringsSectionName;
+            if (!string.IsNullOrEmpty(language)) {
+                sectionName = $"{sectionName}.{language}";
+            }
+
+            // Find the strings section
+            List<InfLine> stringLines = SectionLines(sectionName);
+            // Can we find the key?
+            InfLine? matchingLine = stringLines.SingleOrDefault(o => o.Key?.Value == key);
+            if (matchingLine != null) {
+                if (matchingLine.Values?.Count == 1) {
+                    return matchingLine.Values[0].Value ?? string.Empty;
+                }
+                throw new($"Expected 1 value for string token but found {matchingLine.Values?.Count}.");
+            }
+
+            // If not match found, then just return the key
+            return key;
         }
 
         #endregion Public Methods
