@@ -16,11 +16,9 @@ namespace InfNet {
             try {
                 // Read the version information
                 InfDriverVersion driverVersion = ExtractDriverVersion(infFile);
-                Console.WriteLine($"\tDriver version: {driverVersion.Date.ToShortDateString()}, {driverVersion.Version}");
 
                 // Extract the manufacturer information
                 InfLine manufacturer = ExtractManufacturer(infFile);
-                Console.WriteLine($"\tManufacturer: {manufacturer.Key?.Value} = {string.Join(", ", manufacturer.Values.Select(o => o.Value))}");
 
                 // Build the list of supported devices
                 if (manufacturer.Values?.Count > 0) {
@@ -32,7 +30,6 @@ namespace InfNet {
 
                         // Parse the OS value
                         InfOs infOs = InfOs.CreateFromManufacturerDecoration(decoration);
-                        Console.WriteLine($"\tOs: {infOs}");
 
                         // Read the list of devices 
                         string sectionName = $"{manufacturer.Values[0].Value?.Trim()}.{decoration}";
@@ -42,7 +39,11 @@ namespace InfNet {
                             if (!string.IsNullOrWhiteSpace(line.Key?.Value)) {
                                 if (line.Values?.Count == 2) {
                                     string keyText = infFile.GetStringTokenValue(line.Key.Value);
-                                    Console.WriteLine($"\t\t{keyText}: {line.Values[1].Value}");
+                                    string deviceId = line.Values[1].Value ?? string.Empty;
+
+                                    // Add the summary line
+                                    InfOsDeviceDriver summaryItem = new(infFile, infOs, driverVersion, keyText, deviceId);
+                                    summary.Add(summaryItem);
                                 }
                                 else {
                                     throw new($"Unexpected line '{line}' encountered.");

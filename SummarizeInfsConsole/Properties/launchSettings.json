@@ -1,8 +1,7 @@
 {
   "profiles": {
     "SummarizeInfsConsole": {
-      "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\sgroganx\\OneDrive - Intel Corporation\\Documents\\!_Projects\\DSA\\Projects\\Parse INF\\Output\\Release_29.0.1\" ."
+      "commandName": "Project"
     }
   }
 }

@@ -18,6 +18,10 @@ namespace InfNet.Models.Public {
             Version = version;
         }
 
+        public override string ToString() {
+            return Version.ToString();
+        }
+
         #endregion Public Methods
     }
 }
