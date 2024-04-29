@@ -21,6 +21,35 @@ namespace InfNet {
                 // Extract the manufacturer information
                 InfLine manufacturer = ExtractManufacturer(infFile);
                 Console.WriteLine($"\tManufacturer: {manufacturer.Key?.Value} = {string.Join(", ", manufacturer.Values.Select(o => o.Value))}");
+
+                // Build the list of supported devices
+                if (manufacturer.Values?.Count > 0) {
+                    for (int manufacturerIndex = 1; manufacturerIndex < manufacturer.Values.Count; manufacturerIndex++) {
+                        string? decoration = manufacturer.Values[manufacturerIndex].Value?.Trim();
+                        if (string.IsNullOrWhiteSpace(decoration)) {
+                            throw new($"Manufacturer decoration cannot be blank.");
+                        }
+
+                        // Parse the OS value
+                        InfOs infOs = InfOs.CreateFromManufacturerDecoration(decoration);
+                        Console.WriteLine($"\tOs: {infOs}");
+
+                        // Read the list of devices 
+                        string sectionName = $"{manufacturer.Values[0].Value?.Trim()}.{decoration}";
+                        List<InfLine> sectionLines = infFile.SectionLines(sectionName);
+
+                        foreach (InfLine line in sectionLines) {
+                            if (!string.IsNullOrWhiteSpace(line.Key?.Value)) {
+                                if (line.Values?.Count == 2) {
+                                    Console.WriteLine($"\t\t{line.Key.Value}: {line.Values[1].Value}");
+                                }
+                                else {
+                                    throw new($"Unexpected line '{line}' encountered.");
+                                }
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex) {
                 Console.WriteLine(ex.Message);

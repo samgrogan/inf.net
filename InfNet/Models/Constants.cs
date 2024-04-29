@@ -11,5 +11,9 @@
 
         // Keys
         public const string DriverVerKey = "DriverVer";
+
+        // OS Decoration
+        public const string OsDecorationNt = "NT";
+        public const char OsDecorationSeparator = '.';
     }
 }
