@@ -1,7 +1,7 @@
 ﻿using InfNet.Models.Public;
 using System.Diagnostics;
 
-namespace INF.Net.Test {
+namespace InfNet.Test {
     [TestClass]
     public class InfDeserializerTests {
         [TestMethod]

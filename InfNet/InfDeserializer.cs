@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Xml.Linq;
 using InfNet.Enums;
 using InfNet.Helpers;
 using InfNet.Models.Internal;
 using InfNet.Models.Public;
 
-namespace INF.Net {
+namespace InfNet {
     public class InfDeserializer {
 
         // Keep track of the current status while parsing the list of tokens
@@ -37,7 +36,7 @@ namespace INF.Net {
             bool continueLine = false;
             for (int index = 0; index < length; index++) {
                 char c = infContents[index];
-                char? next = (index < (length - 1)) ? infContents[index + 1] : null;
+                char? next = index < length - 1 ? infContents[index + 1] : null;
 
                 ParseNextChar(c, next, ref index, ref continueLine, rawTokens);
             }

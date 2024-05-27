@@ -14,11 +14,5 @@
         internal const char DoubleQuoteChar = '"';
 
         #endregion Constants
-
-        #region Public Methods
-
-
-
-        #endregion Public Methods
     }
 }

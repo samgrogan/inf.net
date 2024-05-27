@@ -13,7 +13,7 @@ namespace ExtractInfsConsole {
                 foreach (string fileName in fileNames) {
                     Console.WriteLine($"{fileName}...");
                     // Is the file supported
-                    bool result = InfExtractor.ExtractInfFiles(fileName, arguments.OutputFolder);
+                    bool result = InfExtractor.ExtractInfFilesFromFileToDirectory(fileName, arguments.OutputFolder);
                     Console.WriteLine($"\t{result}");
                 }
             }

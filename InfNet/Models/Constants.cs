@@ -1,5 +1,5 @@
 ﻿namespace InfNet.Models {
-    internal static class Constants {
+    public static class Constants {
         // File extensions
         public const string ExeFileExtension = ".exe";
         public const string ZipFileExtension = ".zip";
