@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfNetTest", "InfNetTest\In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtractInfsConsole", "ExtractInfsConsole\ExtractInfsConsole.csproj", "{1B825E81-7C4C-454A-BF63-1A68AC1A54AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummarizeInfsConsole", "SummarizeInfsConsole\SummarizeInfsConsole.csproj", "{7484D421-A063-4947-97BA-EB1F397A9629}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SummarizeInfsConsole", "SummarizeInfsConsole\SummarizeInfsConsole.csproj", "{7484D421-A063-4947-97BA-EB1F397A9629}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4395A24A-2D57-49ED-8CBE-5CC9B60FD2A1}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

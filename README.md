@@ -1,2 +1,2 @@
-# INF.Net
-A C# .NET Standard 2.0 library to Verify, Serialize, and De-Serialize Windows INF files
+# inf.net
+.NET Standard 2.0 library for extracting INF files from .EXE and .ZIP files and for deserializing INF files into easy to use objects.

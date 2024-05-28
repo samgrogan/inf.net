@@ -1,0 +1,1 @@
+..\Nuget\nuget.exe pack InfNet.nuspec -OutputDirectory ..\Nuget
