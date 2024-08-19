@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace InfNet.Models.Public {
     public class InfFile {
@@ -9,6 +10,9 @@ namespace InfNet.Models.Public {
         // Name of the file
         public string FileName { get; private set; }
 
+        // Path where the INF file was found
+        public string FilePath { get; private set; }
+
         // A dictionary of the sections in the INF File
         public List<InfLine> Lines { get; } = new();
 
@@ -17,8 +21,9 @@ namespace InfNet.Models.Public {
         #region Public Methods
 
         // Create a blank INF file
-        public InfFile(string fileName) {
-            FileName = fileName;
+        public InfFile(string filePath) {
+            FileName = Path.GetFileName(filePath);
+            FilePath = filePath;
         }
 
         // Returns a list of the section names in the file

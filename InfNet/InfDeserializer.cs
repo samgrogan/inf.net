@@ -17,18 +17,18 @@ namespace InfNet {
         // Deserialize an INF file from the given file path
         public static InfFile DeserializeFromFile(string filePath) {
             using FileStream infFileStream = File.OpenRead(filePath);
-            return DeserializeFromStream(Path.GetFileName(filePath), infFileStream);
+            return DeserializeFromStream(filePath, infFileStream);
         }
 
         // Deserialize an INF file from the given stream
-        public static InfFile DeserializeFromStream(string fileName, Stream inputStream) {
+        public static InfFile DeserializeFromStream(string filePath, Stream inputStream) {
             using StreamReader streamReader = new(inputStream, true);
-            return DeserializeFromString(fileName, streamReader.ReadToEnd());
+            return DeserializeFromString(filePath, streamReader.ReadToEnd());
         }
 
         // Deserialize an INF file from a string 
 
-        public static InfFile DeserializeFromString(string fileName, string infContents) {
+        public static InfFile DeserializeFromString(string filePath, string infContents) {
             InfRawLineTokens rawTokens = new();
 
             // Convert the file to a stream of tokens
@@ -42,7 +42,7 @@ namespace InfNet {
             }
 
             // Initialize the INF file object from the list of tokens
-            InfFile infFile = CreateInfFileFromRawTokens(fileName, rawTokens);
+            InfFile infFile = CreateInfFileFromRawTokens(filePath, rawTokens);
 
             return infFile;
         }
@@ -124,8 +124,8 @@ namespace InfNet {
         }
 
         // Creates and INF File from a series of tokens
-        private static InfFile CreateInfFileFromRawTokens(string fileName, InfRawLineTokens rawTokens) {
-            InfFile infFile = new(fileName);
+        private static InfFile CreateInfFileFromRawTokens(string filePath, InfRawLineTokens rawTokens) {
+            InfFile infFile = new(filePath);
 
             // Parse each line in the input
             foreach (List<InfRawToken> rawLineTokens in rawTokens) {

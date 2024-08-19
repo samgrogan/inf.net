@@ -36,7 +36,8 @@ namespace SummarizeInfsConsole {
 
                             if (arguments.SourceType == SourceType.InfUrl) {
                                 SummarizeInfStream(arguments.Source, rawResponseStream);
-                            } else {
+                            }
+                            else {
                                 InfExtractor.ExtractInfFilesFromStreamToDelegate(arguments.Source, rawResponseStream, SummarizeInfStream);
                             }
                         }
@@ -64,13 +65,19 @@ namespace SummarizeInfsConsole {
 
         static void SummarizeInfFile(string fileName) {
             Console.WriteLine($"{fileName}...");
-            // Parse the INF
-            InfFile infFile = InfDeserializer.DeserializeFromFile(fileName);
-            // Extract the summary
-            List<InfOsDeviceDriver> summary = InfSummarizer.SummaryizeInfFile(infFile);
 
-            // Print out the summary
-            OutputSummary(summary);
+            try {
+                // Parse the INF
+                InfFile infFile = InfDeserializer.DeserializeFromFile(fileName);
+                // Extract the summary
+                List<InfOsDeviceDriver> summary = InfSummarizer.SummaryizeInfFile(infFile);
+
+                // Print out the summary
+                OutputSummary(summary);
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         static void SummarizeInfStream(string fileName, Stream stream) {
