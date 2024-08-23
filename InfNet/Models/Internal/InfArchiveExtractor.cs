@@ -50,7 +50,7 @@ namespace InfNet.Models.Internal {
                 foreach (ZipArchiveEntry entry in zipArchive.Entries) {
                     // Is this an INF file
                     if (entry.FullName.EndsWith(Constants.InfFileExtension, StringComparison.OrdinalIgnoreCase)) {
-                        string outputPath = PrepareOutputDirectoryForFile(entry.FullName, parentFolder);
+                        string outputPath = PrepareOutputDirectoryForFile(entry.FullName, parentFolder, outputFolder);
                         Console.WriteLine($"\t\t{outputPath}: {entry.FullName}");
                         entry.ExtractToFile(outputPath, true);
                     }
@@ -107,8 +107,9 @@ namespace InfNet.Models.Internal {
             if (string.IsNullOrEmpty(fileName)) {
                 throw new ArgumentNullException(nameof(fileName));
             }
+            parentFolder ??= "/";
 
-            string outputPath = Path.Combine(outputFolder, Path.Combine(Path.Combine(Path.GetFileNameWithoutExtension(fileName), Path.Combine(parentFolder ?? string.Empty, fileName))));
+            string outputPath = Path.Combine(Path.Combine(outputFolder, parentFolder), fileName);
             string? directoryPath = Path.GetDirectoryName(outputPath);
 
             if (string.IsNullOrWhiteSpace(directoryPath)) {
