@@ -14,6 +14,10 @@ namespace SummarizeInfsConsole {
         static void Main(string[] args) {
             Arguments? arguments = Arguments.Create(args);
 
+            // Add the header row
+            Output.AppendLine($"\"File Name\",\"Folder\",\"OS\",\"Driver Version\",\"Device Name\",\"Device ID\"");
+
+
             if (arguments != null) {
                 // Act on the given source type
                 switch (arguments.SourceType) {
@@ -93,8 +97,23 @@ namespace SummarizeInfsConsole {
 
         static void OutputSummary(List<InfOsDeviceDriver> summary) {
             foreach (InfOsDeviceDriver summaryItem in summary) {
-                Output.AppendLine($"\"{summaryItem.File.FileName}\",\"{summaryItem.Os}\",\"{summaryItem.DriverVersion}\",\"{summaryItem.DeviceName}\",\"{summaryItem.DeviceId}\"");
+                Output.AppendLine($"\"{summaryItem.File.FileName}\",\"{FolderName(summaryItem.File.FilePath)}\",\"{summaryItem.Os}\",\"{summaryItem.DriverVersion}\",\"{summaryItem.DeviceName}\",\"{summaryItem.DeviceId}\"");
             }
+        }
+
+        static string? FolderName(string filePath) {
+            try {
+                DirectoryInfo directoryInfo = new(filePath);
+                // Try to split the path
+                string[]? folders = directoryInfo.Parent?.FullName?.Split(Path.DirectorySeparatorChar);
+                if (folders?.Length > 0) {
+                    return folders[folders.Length - 1];
+                }
+            }
+            catch {
+                //
+            }
+            return null;
         }
     }
 }
